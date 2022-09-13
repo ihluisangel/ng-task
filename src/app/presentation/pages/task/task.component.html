@@ -1,0 +1,77 @@
+<div class="container">
+    <br>
+    <br>
+    <div class="d-flex justify-content-between">
+        <h4>LISTA DE TAREAS</h4>
+        <div *ngIf="user$ |async as user ; else loginTemplate" class="d-inline-flex p-2 bd-highlight"> {{user.username}}
+            <button class="btn btn-sm btn-primary ms-2 " (click)="onLogout()">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+        </div>
+
+        <ng-template #loginTemplate>
+            <div class="d-inline-flex p-2 bd-highlight"> <button class="btn btn-sm btn-primary ms-2 "
+                    (click)="onLogout()">
+                    <i class="bi bi-box-arrow-in-right"></i> Ingresar
+                </button> </div>
+        </ng-template>
+
+
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <form class="row g-3" [formGroup]="form">
+        <div class="col-2">
+            <div class="p-2">
+                Tarea
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <label for="tarea" class="visually-hidden"></label>
+            <input formControlName="name" #input type="text" class="form-control"
+                [ngClass]="{ 'is-invalid': isSubmitted && f['name'].errors }" id="tarea" placeholder="" required
+                (keyup.enter)="input.blur(); onSave()" (keypress)="keyOnlyAlphanumeric($event)">
+            <div *ngIf="isSubmitted && f['name'].errors" class="invalid-feedback">
+                <div *ngIf="f['name'].errors['required']">Tarea requerida</div>
+            </div>
+        </div>
+        <div class="col-2">
+            <button (click)="onSave()" type="button" class="btn btn-primary mb-3">Agregar</button>
+        </div>
+    </form>
+    <br>
+    <div class="p-1">
+
+        <div *ngFor="let task of listTask" class="container text center bg-light p-4">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <div class="check_button p-1" (click)="task.check = !task.check">
+                        <i
+                            class="bi bi-{{ task.check==false?'check-circle': 'check-circle-fill'}} fs-2 text-primary "></i>
+
+                    </div>
+
+
+                </div>
+                <div class="col-auto">
+                    {{task?.name??''}}
+                </div>
+                <div class="col-auto" *ngIf="task.check == false" (click)="$event.stopPropagation()">
+                    <button class="btn btn-sm btn-danger " (click)="removeTask(task)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="listTask.length==0" class="container text-center bg-light p-5">
+            Sin tareas asignadas
+        </div>
+
+
+    </div>
+
+</div>
